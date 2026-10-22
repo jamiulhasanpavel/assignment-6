@@ -1,4 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { useSyncExternalStore } from "react";
+import {
+  getWorkoutCount,
+  subscribeToWorkoutStorage,
+} from "@/data/workoutStorage";
 
 const DumbbellIcon = ({ className = "" }: { className?: string }) => (
   <svg
@@ -17,6 +24,17 @@ const DumbbellIcon = ({ className = "" }: { className?: string }) => (
 );
 
 const Navbar = ({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCount?: number }) => {
+  const currentPlanCount = useSyncExternalStore(
+    subscribeToWorkoutStorage,
+    () => getWorkoutCount("plan"),
+    () => planCount,
+  );
+  const currentSavedCount = useSyncExternalStore(
+    subscribeToWorkoutStorage,
+    () => getWorkoutCount("saved"),
+    () => savedCount,
+  );
+
   return (
     <nav className="relative w-full border-b border-[#202124] bg-[#0b0c0e]">
       <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -50,7 +68,7 @@ const Navbar = ({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCo
           >
             <span>Plan</span>
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#c6ff00] px-1 font-bold text-black">
-              {planCount}
+              {currentPlanCount}
             </span>
           </Link>
 
@@ -60,7 +78,7 @@ const Navbar = ({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCo
           >
             <span>Saved</span>
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full border border-[#36383c] px-1 text-[#d4d4d8]">
-              {savedCount}
+              {currentSavedCount}
             </span>
           </Link>
         </div>
