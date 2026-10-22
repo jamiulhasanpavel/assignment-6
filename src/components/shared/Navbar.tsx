@@ -18,8 +18,8 @@ const DumbbellIcon = ({ className = "" }: { className?: string }) => (
 
 const Navbar = ({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCount?: number }) => {
   return (
-    <nav className="w-full border-b border-[#202124] bg-[#0b0c0e]">
-      <div className="mx-auto flex h-20 items-center justify-between px-6">
+    <nav className="relative w-full border-b border-[#202124] bg-[#0b0c0e]">
+      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <DumbbellIcon className="h-[27px] w-[27px] text-[#c6ff00]" />
           <span className="text-xl font-extrabold tracking-wide text-white">
@@ -27,7 +27,7 @@ const Navbar = ({ planCount = 0, savedCount = 0 }: { planCount?: number; savedCo
           </span>
         </Link>
 
-        <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-3">
+        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-3">
           <Link
             href="/"
             className="rounded-full bg-[#19220d] px-4 py-2 text-xs font-semibold text-[#c6ff00]"
