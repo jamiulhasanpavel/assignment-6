@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import WorkoutPlanCard from "@/components/detaitspage/ViewDetails";
 import { workouts, type Workout } from "@/data/workouts";
 import {
   readWorkoutIds,
@@ -36,8 +37,8 @@ function Icon({ name, className = "" }: { name: "clock" | "flame" | "dumbbell" |
   );
 }
 
-export default function MyPlan() {
-  const [activeTab, setActiveTab] = useState<Tab>("plan");
+export default function MyPlan({ initialTab = "plan" }: { initialTab?: Tab }) {
+  const activeTab = initialTab;
   const [planIds, setPlanIds] = useState<number[]>([]);
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [sortBy, setSortBy] = useState<SortBy>("duration");
@@ -122,38 +123,30 @@ export default function MyPlan() {
         </section>
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <div
-            role="tablist"
-            aria-label="Workout lists"
-            className="flex rounded-xl border border-[#292d37] bg-[#15161b] p-1"
-          >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "plan"}
-              onClick={() => setActiveTab("plan")}
-              className={`rounded-lg px-4 py-2 text-xs transition ${
+          <nav aria-label="Workout lists" className="flex gap-2">
+            <Link
+              href="/my-plan"
+              aria-current={activeTab === "plan" ? "page" : undefined}
+              className={`rounded-xl border border-[#292d37] px-4 py-2 text-xs transition ${
                 activeTab === "plan"
                   ? "bg-[#222630] font-bold text-white"
-                  : "text-gray-400 hover:text-white"
+                  : "bg-[#15161b] text-gray-400 hover:text-white"
               }`}
             >
               Today&apos;s Plan ({planIds.length})
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === "saved"}
-              onClick={() => setActiveTab("saved")}
-              className={`rounded-lg px-5 py-2 text-xs transition ${
+            </Link>
+            <Link
+              href="/saved"
+              aria-current={activeTab === "saved" ? "page" : undefined}
+              className={`rounded-xl border border-[#292d37] px-5 py-2 text-xs transition ${
                 activeTab === "saved"
                   ? "bg-[#222630] font-bold text-white"
-                  : "text-gray-400 hover:text-white"
+                  : "bg-[#15161b] text-gray-400 hover:text-white"
               }`}
             >
               Saved ({savedIds.length})
-            </button>
-          </div>
+            </Link>
+          </nav>
 
           <label className="flex items-center gap-3 text-xs text-gray-400">
             Sort by
@@ -193,48 +186,23 @@ export default function MyPlan() {
         ) : (
           <section
             aria-label={activeTab === "plan" ? "Today's workouts" : "Saved workouts"}
-            className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+            className="mt-6 flex flex-col gap-4"
           >
             {sortedItems.map((workout) => (
-              <article
+              <WorkoutPlanCard
                 key={workout.id}
-                className="rounded-xl border border-[#292d37] bg-[#15161b] p-5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-bold uppercase">{workout.title}</h2>
-                    <p className="mt-2 flex items-center gap-2 text-xs text-gray-400">
-                      <Icon name="clock" />
-                      {workout.duration} min
-                      <Icon name="flame" />
-                      {workout.calories} kcal
-                    </p>
-                  </div>
-                  <Icon name="dumbbell" className="h-5 w-5 text-[#c6ff00]" />
-                </div>
-
-                <div className="mt-5 flex gap-3">
-                  {activeTab === "saved" && (
-                    <button
-                      type="button"
-                      onClick={() => addToPlan(workout.id)}
-                      disabled={planIds.includes(workout.id)}
-                      className="rounded-lg bg-[#c6ff00] px-4 py-2 text-xs font-bold text-black disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      {planIds.includes(workout.id)
-                        ? "Already in plan"
-                        : "Add to plan"}
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => removeWorkout(workout.id)}
-                    className="rounded-lg border border-[#383b42] px-4 py-2 text-xs text-gray-300 hover:border-red-500 hover:text-red-400"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </article>
+                workoutId={workout.id}
+                title={workout.title}
+                equipment={workout.equipment}
+                duration={workout.duration}
+                calories={workout.calories}
+                rating={workout.rating}
+                onAddToPlan={
+                  activeTab === "saved" ? () => addToPlan(workout.id) : undefined
+                }
+                isInPlan={planIds.includes(workout.id)}
+                onRemove={() => removeWorkout(workout.id)}
+              />
             ))}
           </section>
         )}
