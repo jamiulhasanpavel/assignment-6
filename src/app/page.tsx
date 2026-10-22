@@ -1,4 +1,5 @@
 import Banner from "@/components/homepage/Banner";
+import WorkoutLibraryCard from "@/components/card/WorkoutLibraryCard";
 import Navbar from "@/components/shared/Navbar";
 
 export default function Home() {
@@ -8,6 +9,9 @@ export default function Home() {
 
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <Banner />
+        <div className="mt-6">
+          <WorkoutLibraryCard />
+        </div>
       </main>
     </div>
   );
